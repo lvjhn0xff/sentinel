@@ -2,8 +2,10 @@ from sklearn.model_selection import RepeatedStratifiedKFold
 from imblearn.pipeline import Pipeline
 import pandas as pd
 from utils.printing import Printing
+import numpy as np
 
 from .split_run import SplitRun
+
 
 class CrossValidationExperiment(Printing): 
     def __init__(
@@ -58,6 +60,14 @@ class CrossValidationExperiment(Printing):
 
         # Pipeline Generator Function 
         self.pipeline_fn = pipeline_fn
+
+        # List of Classes 
+        self.classes = np.unique(self.y)
+        self.class_count = len(list(set(self.y)))
+
+        # Whether multiclass or binary
+        self.multiclass = self.class_count > 2
+        self.binary = self.class_count == 2
 
     def describe_dataset(self): 
         self.print(f"\tX = {self.X.shape}")

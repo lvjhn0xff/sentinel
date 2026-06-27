@@ -11,8 +11,8 @@ from sklearn.neighbors import KNeighborsClassifier
 
 experiment_type = "regression"
 
-# X, y = load_clf_2d("moons") 
-X, y = load_reg_2d("moons")
+X, y = load_clf_2d("moons") 
+# X, y = load_reg_2d("moons")
 
 def make_pipeline(fold_no, X_train, X_test):
     return Pipeline([

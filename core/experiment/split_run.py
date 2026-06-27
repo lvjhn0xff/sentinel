@@ -4,7 +4,9 @@ import time
 from collections import Counter
 import numpy as np 
 from utils.percentiles import percentiles
-from .performance import Performance
+
+from .performance_clf import ClassificationPerformance
+from .performance_reg import RegressionPerformance
 
 class SplitRun(Printing): 
     def __init__(
@@ -33,7 +35,7 @@ class SplitRun(Printing):
         self.id = id_ 
 
         # Context
-        self.context = context 
+        self.experiment = context 
 
         # Pipeline 
         self.pipeline = pipeline
@@ -76,7 +78,7 @@ class SplitRun(Printing):
 
         # Get label distribution.  
         self.print(f":: Label Distribution")
-        if self.context.experiment_type == "classification": 
+        if self.experiment.experiment_type == "classification": 
             self.label_distribution = {
                 "train" : Counter(self.y_train), 
                 "test"  : Counter(self.y_test) 
@@ -89,7 +91,7 @@ class SplitRun(Printing):
                         f"\t\t{class_} = {self.label_distribution[split][class_]}"
                     )
 
-        elif self.context.experiment_type == "regression": 
+        elif self.experiment.experiment_type == "regression": 
             self.label_distribution = {
                 "train" : np.histogram(self.y_train, bins=10)[0], 
                 "test"  : np.histogram(self.y_test, bins=10)[0],
@@ -132,7 +134,7 @@ class SplitRun(Printing):
 
         self.print(f"> Calling .predict_proba() on X_train")
         start = time.time() 
-        self.predict_proba_train = self.pipeline.predict(self.X_train)
+        self.predict_proba_train = self.pipeline.predict_proba(self.X_train)
         end = time.time() 
         self.predict_proba_train_time = end - start
         self.print(
@@ -142,7 +144,7 @@ class SplitRun(Printing):
 
         self.print(f"> Calling .predict_proba() on X_test")
         start = time.time() 
-        self.predict_proba_test = self.pipeline.predict(self.X_test) 
+        self.predict_proba_test = self.pipeline.predict_proba(self.X_test) 
         end = time.time() 
         self.predict_proba_test_time = end - start  
         self.print(
@@ -151,12 +153,34 @@ class SplitRun(Printing):
         ) 
 
     def evaluate(self): 
-        print(f"> Evaluating run.") 
+        self.print(f"> Evaluating run.") 
 
-        print(f"> Evaluating on train set.") 
-        train_performance = Performance(self.X_train)
+        PerformanceClass = None 
+        if self.experiment.experiment_type == "classification": 
+            PerformanceClass = ClassificationPerformance 
+        elif self.experiment.experiment_type == "regression": 
+            PerformanceClass = RegressionPerformance 
+        else: 
+            raise Exception(
+                f"Unknown experiment type: {self.context.experiment_type}"
+            )
+
+        self.print(f"> Evaluating on train set.") 
+        train_performance = PerformanceClass(
+            context = self,
+            y = self.y_train, 
+            y_hat = self.predict_train,
+            y_proba = self.predict_proba_train
+        )
+        train_performance.indent = self.indent + "\t"
         train_performance.compute()
 
-        print(f"> Evaluating on test set.")
-        test_performance = Performance(self.X_test) 
+        self.print(f"> Evaluating on test set.")
+        test_performance = PerformanceClass(
+            context = self, 
+            y = self.y_test, 
+            y_hat = self.predict_test,
+            y_proba = self.predict_proba_test
+        ) 
+        test_performance.indent = self.indent + "\t"
         test_performance.compute()
