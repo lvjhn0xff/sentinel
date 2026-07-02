@@ -1,12 +1,12 @@
-from utils.printing import Printing
 from sklearn.metrics import *
 import numpy as np
-from utils.percentiles import percentiles
+from utils.python.percentiles import percentiles
 import matplotlib.pyplot as plt
 
 from matplotlib.colors import Normalize
 import pandas as pd
 
+from utils.python.printing import Printing
 
 class RegressionPerformance(Printing): 
     def __init__(

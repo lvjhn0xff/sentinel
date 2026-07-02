@@ -1,2 +1,3 @@
-# LTCL 
-Layered Transmuted Complement Lattices
+# TOPIC
+**Transmutation Oriented and Powered Interacting Complements**
+

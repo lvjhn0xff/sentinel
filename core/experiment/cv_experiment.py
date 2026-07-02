@@ -1,8 +1,9 @@
 from sklearn.model_selection import RepeatedStratifiedKFold
 from imblearn.pipeline import Pipeline
 import pandas as pd
-from utils.printing import Printing
 import numpy as np
+
+from utils.python.printing import Printing
 
 from .split_run import SplitRun
 

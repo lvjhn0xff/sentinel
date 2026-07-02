@@ -1,12 +1,15 @@
 
-from utils.printing import Printing
 import time
 from collections import Counter
 import numpy as np 
-from utils.percentiles import percentiles
+
+from utils.python.percentiles import percentiles
 
 from .performance_clf import ClassificationPerformance
 from .performance_reg import RegressionPerformance
+
+from utils.python.printing import Printing
+
 
 class SplitRun(Printing): 
     def __init__(

@@ -1,8 +1,6 @@
-from utils.printing import Printing
 from sklearn.metrics import *
 from sklearn.inspection import DecisionBoundaryDisplay
 from sklearn.utils.class_weight import compute_sample_weight
-from utils.display import display_confusion_matrix
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import label_binarize
 from sklearn.metrics import (
@@ -14,9 +12,10 @@ from sklearn.metrics import (
 )
 from matplotlib.colors import ListedColormap
 
+from utils.python.printing import Printing
+from utils.python.display import display_confusion_matrix
+
 import numpy as np
-
-
 import pandas as pd
 
 class ClassificationPerformance(Printing): 
@@ -501,19 +500,7 @@ class ClassificationPerformance(Printing):
         )
         disp.plot(ax=ax, colorbar=False)
 
-        ax.set_title("Confusion Matrix")
-        fig.tight_layout()
-
-        self.confusion_matrix_plot = (fig, ax)
-
-        display_confusion_matrix(
-            cm,
-            self.split_run.experiment.classes,
-            prefix=self.indent + "\t"
-        )
-
-        plt.show()
-
+        
 
     def generate_pr_auc_plot(self):
         self.print("> Generating PR-AUC Plot.")

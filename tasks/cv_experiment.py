@@ -13,17 +13,18 @@ from xgboost import XGBClassifier
 from sklearn.neighbors import KNeighborsClassifier, RadiusNeighborsClassifier
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.ensemble import BaggingClassifier
+from sklearn.linear_model import LogisticRegression
 
 experiment_type = "classification"
 
-X, y = load_clf_2d("stars") 
+X, y = load_clf_2d("checkerboard") 
 # X, y = load_reg_2d("moons")
 
 def make_pipeline(fold_no, X_train, X_test):
     return Pipeline([
-        ("polynomial", PolynomialFeatures()),
+        ("polynomial", PolynomialFeatures(degree=32)),
         ("scaler", StandardScaler()),
-        ("model", KNeighborsClassifier()),
+        ("model", LogisticRegression()),
         # ("model", MLPClassifier(hidden_layer_sizes=(128, 32), activation="logistic"))
     ])
 
